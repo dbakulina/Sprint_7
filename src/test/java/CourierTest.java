@@ -53,7 +53,7 @@ public class CourierTest {
                 .statusCode(400);
     }
     // запрос возвращает правильный код ответа; Коды 201 400 и 409 протестированы в предыдущих тестах
-// 5. Код ответа если отправить запрос на несуществующую ручку 404
+    // 5. Код ответа если отправить запрос на несуществующую ручку 404
     @Test
     public void courierCreateWrongRootStatus() {
        int status =  courierClient.createWrongRoot(courier)
@@ -61,10 +61,6 @@ public class CourierTest {
         assertEquals(404, status);
         System.out.println(status);
     }
-
-
-
-
     // 6. Код ответа если отправить неверный метод запроса GET
     @Test
     public void courierCreateWrongMethodStatus() {
