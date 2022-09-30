@@ -1,40 +1,20 @@
-
-import config.Config;
 import courier.Courier;
-
 import courier.CourierClient;
-
 import courier.CourierCredentials;
-
-import io.restassured.response.Response;
 import io.restassured.response.ValidatableResponse;
-import org.junit.After;
-
 import org.junit.Before;
-
 import org.junit.Test;
-
-import static io.restassured.RestAssured.given;
 import static org.junit.Assert.*;
 
 public class CourierTest {
-
     Courier courier;
-
     CourierClient courierClient;
-
     private int courierId;
-
     @Before
-
     public void setup() {
-
         courier = Courier.getRandomCourier();
-
         courierClient = new CourierClient();
-
     }
-
     // 1. Проверить что курьера можно создать;
     @Test
     public void courierCreateTest() {
@@ -46,7 +26,6 @@ public class CourierTest {
         assertNotEquals(0, courierId);
         courierClient.delete(courierId);
     }
-
     // 2. Проверить, что нельзя создать двух одинаковых курьеров;
     @Test
     public void courierCreateTestTwoCouriers() {
@@ -58,16 +37,14 @@ public class CourierTest {
                 .extract().path("id");
         courierClient.delete(courierId);
     }
-
     //чтобы создать курьера, нужно передать в ручку все обязательные поля;
-// 3. Проверить, что нельзя создать курьера без пароля
+    // 3. Проверить, что нельзя создать курьера без пароля
     @Test
     public void createWithoutPassword() {
         courier = Courier.getWithoutPassword();
         courierClient.createFailed(courier)
                 .statusCode(400);
     }
-
     // 4. Проверить, что нельзя создать курьера без логина
     @Test
     public void createWithoutLogin() {
@@ -75,14 +52,18 @@ public class CourierTest {
         courierClient.createFailed(courier)
                 .statusCode(400);
     }
-
     // запрос возвращает правильный код ответа; Коды 201 400 и 409 протестированы в предыдущих тестах
 // 5. Код ответа если отправить запрос на несуществующую ручку 404
     @Test
     public void courierCreateWrongRootStatus() {
-        courierClient.createWrongRoot(courier)
-                .statusCode(404);
+       int status =  courierClient.createWrongRoot(courier)
+        .extract().statusCode();
+        assertEquals(404, status);
+        System.out.println(status);
     }
+
+
+
 
     // 6. Код ответа если отправить неверный метод запроса GET
     @Test
@@ -90,7 +71,6 @@ public class CourierTest {
         courierClient.createWrongMethod(courier)
                 .statusCode(404);
     }
-
     // 7. Проверить, что успешный запрос возвращает ok: true;
     @Test
     public void courierTestReturnTrue() {
@@ -103,9 +83,8 @@ public class CourierTest {
         assertNotEquals(0, courierId);
         courierClient.delete(courierId);
     }
-
     //если одного из полей нет, запрос возвращает ошибку;
-// 8. Проверить, что если создавать запрос без пароля, вернется ошибка
+    // 8. Проверить, что если создавать запрос без пароля, вернется ошибка
     @Test
     public void createWithoutPasswordMassage() {
         courier = Courier.getWithoutPassword();
@@ -114,7 +93,6 @@ public class CourierTest {
                 .extract().path("message");
         assertEquals("Недостаточно данных для создания учетной записи", requestWithoutLoginOrPassword);
     }
-
     // 9. Проверить, что если создавать запрос без логина, вернется ошибка
     @Test
     public void createWithoutLoginMassage() {
@@ -124,7 +102,6 @@ public class CourierTest {
                 .extract().path("message");
         assertEquals("Недостаточно данных для создания учетной записи", requestWithoutLoginOrPassword);
     }
-
     // 10. Проверить, что если создавать курьера с существующим логином или паролем, вернется ошибка
     @Test
     public void courierTestTwoCouriersMassage() {
@@ -138,8 +115,8 @@ public class CourierTest {
         assertEquals("Этот логин уже используется. Попробуйте другой.", loginAlreadyExists);
         courierClient.delete(courierId);
     }
-//Задание 5. Получить список заказов курьера
-@Test
+    //Задание 5. Получить список заказов курьера
+    @Test
     public void courierGetOrders() {
         courierClient.create(courier);
         CourierCredentials creds = CourierCredentials.from(courier);
