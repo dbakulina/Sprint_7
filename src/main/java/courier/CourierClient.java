@@ -4,6 +4,7 @@ import io.qameta.allure.Step;
 import io.restassured.response.ValidatableResponse;
 public class CourierClient extends BaseClient {
     private final String ROOT = "/courier";
+    private final String WRONG_ROOT = "/courieru";
     private final String COURIER = "/courier/{courierId}";
     private final String LOGIN = ROOT + "/login";
     private final String ORDER = "/orders?courierId={courierId}";
@@ -19,14 +20,14 @@ public class CourierClient extends BaseClient {
         return getSpec()
                 .body(courier)
                 .when()
-                .post("/courieru")
+                .post(WRONG_ROOT)
                 .then().log().all();
     }
     public ValidatableResponse createWrongMethod(Courier courier) {
         return getSpec()
                 .body(courier)
                 .when()
-                .get("/courier")
+                .get(ROOT)
                 .then().log().all();
     }
 
