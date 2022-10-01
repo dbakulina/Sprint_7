@@ -1,5 +1,4 @@
 package courier;
-import io.qameta.allure.Step;
 
 import io.restassured.response.ValidatableResponse;
 public class CourierClient extends BaseClient {
@@ -15,7 +14,6 @@ public class CourierClient extends BaseClient {
                 .post(ROOT)
                 .then().log().all();
     }
-
     public ValidatableResponse createWrongRoot(Courier courier) {
         return getSpec()
                 .body(courier)
@@ -30,33 +28,26 @@ public class CourierClient extends BaseClient {
                 .get(ROOT)
                 .then().log().all();
     }
-
-
     public ValidatableResponse createFailed(Courier courier) {
         return getSpec()
                 .body(courier)
                 .when()
                 .post(ROOT)
-                .then().log().all()
-                .statusCode(400);
+                .then().log().all();
     }
-
     public ValidatableResponse login(CourierCredentials creds) {
         return getSpec()
                 .body(creds)
                 .when()
                 .post(LOGIN)
-                .then().log().all()
-                .assertThat()
-                .statusCode(200);
+                .then().log().all();
     }
     public ValidatableResponse loginWrong(CourierCredentials creds) {
         return getSpec()
                 .body(creds)
                 .when()
                 .post(LOGIN)
-                .then().log().all()
-                .assertThat();
+                .then().log().all();
     }
     public void delete(int courierId) {
         getSpec()
@@ -67,15 +58,12 @@ public class CourierClient extends BaseClient {
                 .assertThat()
                 .statusCode(200);
     }
-
-    public void getOrders(int courierId) {
-        getSpec()
+    public ValidatableResponse getOrders(int courierId) {
+        return getSpec()
                 .pathParam("courierId", courierId)
                 .when()
                 .get(ORDER)
-                .then().log().all()
-                .assertThat()
-                .statusCode(200);
+                .then().log().all();
     }
 }
 

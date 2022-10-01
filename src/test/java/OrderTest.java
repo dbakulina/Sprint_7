@@ -1,29 +1,20 @@
-import config.Config;
-import io.restassured.RestAssured;
-import io.restassured.response.Response;
+import order.Order;
 import org.junit.Before;
 import org.junit.Test;
 import java.io.File;
-import static io.restassured.RestAssured.given;
 import static org.junit.Assert.assertNotEquals;
-
 public class OrderTest {
     private int orderTrack;
+    Order order;
     @Before
     public void setUp() {
-        RestAssured.baseURI = "https://qa-mesto.praktikum-services.ru";
+        order = new Order();
     }
  // 1.Проверить что можно указать один из цветов — BLACK ;
     @Test
     public void createOrderBlack(){
         File json = new File("src/test/resources/order.json");
-                given().log().all()
-                .header("Content-Type", "application/json")
-                .baseUri(Config.BASE_URL)
-                .body(json)
-                .when()
-                .post("/orders")
-                .then().log().all()
+                order.createOrder(json)
                 .assertThat()
                 .statusCode(201);
     }
@@ -31,13 +22,7 @@ public class OrderTest {
     @Test
     public void createOrderGrey(){
         File json = new File("src/test/resources/ordergrey.json");
-        given().log().all()
-                .header("Content-Type", "application/json")
-                .baseUri(Config.BASE_URL)
-                .body(json)
-                .when()
-                .post("/orders")
-                .then().log().all()
+        order.createOrder(json)
                 .assertThat()
                 .statusCode(201);
     }
@@ -45,13 +30,7 @@ public class OrderTest {
     @Test
     public void createOrderTwoColours(){
         File json = new File("src/test/resources/ordertwocolours.json");
-        given().log().all()
-                .header("Content-Type", "application/json")
-                .baseUri(Config.BASE_URL)
-                .body(json)
-                .when()
-                .post("/orders")
-                .then().log().all()
+        order.createOrder(json)
                 .assertThat()
                 .statusCode(201);
     }
@@ -59,13 +38,7 @@ public class OrderTest {
     @Test
     public void createOrderNoColours(){
         File json = new File("src/test/resources/ordernocolour.json");
-        given().log().all()
-                .header("Content-Type", "application/json")
-                .baseUri(Config.BASE_URL)
-                .body(json)
-                .when()
-                .post("/orders")
-                .then().log().all()
+        order.createOrder(json)
                 .assertThat()
                 .statusCode(201);
     }
@@ -73,13 +46,7 @@ public class OrderTest {
     @Test
     public void orderReturnTrack(){
         File json = new File("src/test/resources/ordernocolour.json");
-        orderTrack = given().log().all()
-                .header("Content-Type", "application/json")
-                .baseUri(Config.BASE_URL)
-                .body(json)
-                .when()
-                .post("/orders")
-                .then().log().all()
+        orderTrack = order.createOrder(json)
                 .assertThat()
                 .statusCode(201)
                 .extract().path("track");

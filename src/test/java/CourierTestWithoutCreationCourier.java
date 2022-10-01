@@ -20,6 +20,7 @@ public class CourierTestWithoutCreationCourier {
     public void createWithoutPassword() {
         courier = Courier.getWithoutPassword();
         courierClient.createFailed(courier)
+                .assertThat()
                 .statusCode(400);
     }
     // 4. Проверить, что нельзя создать курьера без логина
@@ -27,21 +28,22 @@ public class CourierTestWithoutCreationCourier {
     public void createWithoutLogin() {
         courier = Courier.getWithoutLogin();
         courierClient.createFailed(courier)
+                .assertThat()
                 .statusCode(400);
     }
     // запрос возвращает правильный код ответа; Коды 201 400 и 409 протестированы в предыдущих тестах
     // 5. Код ответа если отправить запрос на несуществующую ручку 404
     @Test
     public void courierCreateWrongRootStatus() {
-        int status =  courierClient.createWrongRoot(courier)
-                .extract().statusCode();
-        assertEquals(404, status);
-        System.out.println(status);
+        courierClient.createWrongRoot(courier)
+                .assertThat()
+                .statusCode(404);
     }
     // 6. Код ответа если отправить неверный метод запроса GET
     @Test
     public void courierCreateWrongMethodStatus() {
         courierClient.createWrongMethod(courier)
+                .assertThat()
                 .statusCode(404);
     }
     //если одного из полей нет, запрос возвращает ошибку;

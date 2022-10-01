@@ -5,6 +5,9 @@ import io.restassured.response.ValidatableResponse;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.util.ArrayList;
+
 import static org.junit.Assert.*;
 
 public class CourierTest {
@@ -21,13 +24,13 @@ public class CourierTest {
         CourierCredentials creds = CourierCredentials.from(courier);
         courierId = courierClient.login(creds)
                 .extract().path("id");
-        assertNotEquals(0, courierId);
         courierClient.delete(courierId);
     }
     // 1. Проверить что курьера можно создать;
     @Test
     public void courierCreateTest() {
         courierClient.create(courier)
+                .assertThat()
                 .statusCode(201);
     }
     // 2. Проверить, что нельзя создать двух одинаковых курьеров;
@@ -35,6 +38,7 @@ public class CourierTest {
     public void courierCreateTestTwoCouriers() {
         courierClient.create(courier);
         courierClient.create(courier)
+                .assertThat()
                 .statusCode(409);
     }
     // 7. Проверить, что успешный запрос возвращает ok: true;
@@ -60,6 +64,8 @@ public class CourierTest {
         CourierCredentials creds = CourierCredentials.from(courier);
         courierId = courierClient.login(creds)
             .extract().path("id");
-        courierClient.getOrders(courierId);
+        ArrayList orderResponse = courierClient.getOrders(courierId)
+                .extract().path("orders");
+        assertNotNull(orderResponse);
     }
 }
